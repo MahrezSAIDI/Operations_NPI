@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mynetwork
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 10s  
+      timeout: 5s     
+      retries: 5      
+
+  api:
+    build:
+      context: ./OperationsNPI
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy  
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}          
+      DB_PASSWORD: ${MYSQL_PASSWORD}    
+      DB_NAME: ${MYSQL_DATABASE}        
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork
+
+  react:
+    build:
+      context: ./operations-npi-front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - mynetwork
+    environment:
+      REACT_APP_API_URL: http://db:8000  # Point vers le service API
+
+volumes:
+  db_data:
+
+networks:
+  mynetwork:
+    external: true

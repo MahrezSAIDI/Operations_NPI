@@ -1,0 +1,21 @@
+# Ignorer node_modules et les fichiers spécifiques à npm
+node_modules/
+package-lock.json
+yarn.lock
+
+# Ignorer les fichiers Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Environnement virtuel
+venv/
+env/
+
+# Caches d'éditeurs de code
+.vscode/
+.idea/
+
+# Ignorer les fichiers de compilation
+dist/
+build/
