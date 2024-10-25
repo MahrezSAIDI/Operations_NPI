@@ -106,7 +106,7 @@ function OperationsHome() {
     };
 
     const exportToCSV = () => {
-        const headers = ["Expression, Résultat"];
+        const headers = ["Expression, Result"];
         const csvData = operations.map(operation =>
             `${operation.expression},${operation.result}`
         );
